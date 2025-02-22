@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ProductApi.Shared.Utils;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProductApi.Models.Entity
 {
@@ -6,19 +7,9 @@ namespace ProductApi.Models.Entity
     {
         [Key]
         public int Id { get; set; }
+        public string ProductNumber { get; set; } = IdGenerator.GenerateUniqueId();
         public string? Name { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
-
-        public Product()
-        {
-            Id = GenerateUniqueProductId();
-        }
-
-        private int GenerateUniqueProductId()
-        {
-            Random random = new Random();
-            return random.Next(100000, 999999);
-        }
     }
 }
