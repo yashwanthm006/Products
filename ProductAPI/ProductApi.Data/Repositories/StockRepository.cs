@@ -47,19 +47,27 @@ namespace ProductApi.Data.Repositories
 
                 if (stock == null)
                 {
-                    _logger.LogWarning($"Stock record not found for product ID: {productId}");
                     throw new KeyNotFoundException($"Stock record not found for product ID {productId}.");
                 }
 
                 stock.Quantity += quantity;
+                if(stock.Quantity <  0)
+                {
+                    throw new DbUpdateConcurrencyException($"Concurrency error while updating stock for product ID: {productId}");
+                }
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation($"Stock updated successfully for product ID: {productId}, New Quantity: {stock.Quantity}");
             }
+            catch(KeyNotFoundException e)
+            {
+                _logger.LogWarning($"Stock record not found for product ID {productId}.");
+                throw;
+            }
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex, $"Concurrency error while updating stock for product ID: {productId}");
-                throw new Exception("Concurrency error occurred while updating stock.", ex);
+                throw;
             }
             catch (Exception ex)
             {

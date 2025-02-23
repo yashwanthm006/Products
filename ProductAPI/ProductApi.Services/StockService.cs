@@ -28,19 +28,27 @@ namespace ProductApi.Services
 
                 if (product == null)
                 {
-                    _logger.LogWarning($"Stock decrement failed. Product with ID {id} not found.");
                     throw new KeyNotFoundException($"Product with ID {id} not found.");
                 }
 
                 if (product.Stock < quantity)
                 {
-                    _logger.LogWarning($"Stock decrement failed. Not enough stock for product ID: {id}");
                     throw new InvalidOperationException($"Not enough stock for product ID {id}.");
                 }
 
                 product.Stock -= quantity;
                 await _repository.UpdateAsync(product);
                 _logger.LogInformation($"Stock decremented successfully for product ID: {id}. New stock: {product.Stock}");
+            }
+            catch(KeyNotFoundException  ex)
+            {
+                _logger.LogWarning($"Stock decrement failed. Product with ID {id} not found.");
+                throw;
+            }
+            catch(InvalidOperationException e)
+            {
+                _logger.LogWarning($"Stock decrement failed. Not enough stock for product ID: {id}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -53,18 +61,22 @@ namespace ProductApi.Services
         {
             try
             {
-                _logger.LogInformation($"Adding {quantity} to stock for product ID: {id}");
+                
                 var product = await _repository.GetByIdAsync(id);
 
                 if (product == null)
                 {
-                    _logger.LogWarning($"Stock addition failed. Product with ID {id} not found.");
                     throw new KeyNotFoundException($"Product with ID {id} not found.");
                 }
 
                 product.Stock += quantity;
                 await _repository.UpdateAsync(product);
                 _logger.LogInformation($"Stock added successfully for product ID: {id}. New stock: {product.Stock}");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogInformation($"Adding {quantity} to stock for product ID: {id}");
+                throw;
             }
             catch (Exception ex)
             {

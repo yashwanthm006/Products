@@ -1,4 +1,5 @@
-﻿using ProductApi.Models.Entity;
+﻿using ProductApi.Models.DTO;
+using ProductApi.Models.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace ProductApi.Services
     public interface IProductService
     {
         Task<IEnumerable<Product>> GetAllAsync();
-        Task<Product?> GetByIdAsync(int id);
-        Task<Product> CreateAsync(Product product);
-        Task UpdateAsync(int id, Product product);
+        Task<ProductDto?> GetByIdAsync(int id);
+        Task<ProductDto> CreateAsync(CreateProductDto createProductDto);
+        Task UpdateAsync(int id, UpdateProductDto updatedProduct);
         Task DeleteAsync(int id);
     }
 }

@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using ProductApi.Data.Repositories;
+using ProductApi.Models.DTO;
 using ProductApi.Models.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ProductApi.Services
@@ -14,11 +18,13 @@ namespace ProductApi.Services
     {
         private readonly IProductRepository _repository;
         private readonly ILogger<ProductService> _logger;
+        private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repository, ILogger<ProductService> logger)
+        public ProductService(IProductRepository repository, ILogger<ProductService> logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<Product>> GetAllAsync()
@@ -35,7 +41,7 @@ namespace ProductApi.Services
             }
         }
 
-        public async Task<Product?> GetByIdAsync(int id)
+        public async Task<ProductDto?> GetByIdAsync(int id)
         {
             try
             {
@@ -45,7 +51,7 @@ namespace ProductApi.Services
                 {
                     _logger.LogWarning($"Product with ID {id} not found.");
                 }
-                return product;
+                return product == null ? null : _mapper.Map<ProductDto>(product);
             }
             catch (Exception ex)
             {
@@ -54,14 +60,15 @@ namespace ProductApi.Services
             }
         }
 
-        public async Task<Product> CreateAsync(Product product)
+        public async Task<ProductDto> CreateAsync(CreateProductDto createProductDto)
         {
             try
             {
-                _logger.LogInformation("Creating new product.");
+                _logger.LogInformation($"Creating new product. {JsonConvert.SerializeObject(createProductDto)}");
+                var product = _mapper.Map<Product>(createProductDto);
                 await _repository.AddAsync(product);
                 _logger.LogInformation($"Product created successfully with ID: {product.Id}");
-                return product;
+                return _mapper.Map<ProductDto>(product);
             }
             catch (Exception ex)
             {
@@ -70,21 +77,27 @@ namespace ProductApi.Services
             }
         }
 
-        public async Task UpdateAsync(int id, Product product)
+        public async Task UpdateAsync(int id, UpdateProductDto updatedProduct)
         {
             try
             {
                 _logger.LogInformation($"Updating product with ID: {id}");
                 if (await _repository.ExistsAsync(id))
                 {
+                    var product = await _repository.GetByIdAsync(id);
+                    _mapper.Map(updatedProduct, product);
                     await _repository.UpdateAsync(product);
                     _logger.LogInformation($"Product with ID {id} updated successfully.");
                 }
                 else
                 {
-                    _logger.LogWarning($"Update failed. Product with ID {id} does not exist.");
                     throw new KeyNotFoundException($"Product with ID {id} not found.");
                 }
+            }
+            catch(KeyNotFoundException e)
+            {
+                _logger.LogWarning($"Update failed. Product with ID {id} does not exist.");
+                throw;
             }
             catch (Exception ex)
             {
@@ -105,9 +118,13 @@ namespace ProductApi.Services
                 }
                 else
                 {
-                    _logger.LogWarning($"Delete failed. Product with ID {id} does not exist.");
                     throw new KeyNotFoundException($"Product with ID {id} not found.");
                 }
+            }
+            catch(KeyNotFoundException e)
+            {
+                _logger.LogWarning($"Delete failed. Product with ID {id} does not exist.");
+                throw;
             }
             catch (Exception ex)
             {
