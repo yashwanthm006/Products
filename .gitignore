@@ -2,7 +2,7 @@
 # RESTFull API project to give Products related Endpoints for the End users
 
 /.vs
-/ProductAPI/ProductApi.Data\Migrations
+/ProductAPI/ProductApi.Data/Migrations
 /ProductAPI/ProductApi.API/logs
 /ProductAPI/ProductApi.API/.vs
 /ProductAPI/ProductApi.API/bin
