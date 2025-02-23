@@ -34,6 +34,8 @@ Edit `appsettings.json`:
 }
 
 ### **3️⃣ Run Database Migrations**s
+Select Default Project As ProductApi.Data
+Then
 In Package Manager Console
  1. Add-Migration "MigrationName"
  2. Update-Database

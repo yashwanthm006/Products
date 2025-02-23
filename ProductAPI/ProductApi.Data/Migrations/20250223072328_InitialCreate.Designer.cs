@@ -12,8 +12,8 @@ using ProductApi.Data.Context;
 namespace ProductApi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250223031834_DatatypeUpdate")]
-    partial class DatatypeUpdate
+    [Migration("20250223072328_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,9 @@ namespace ProductApi.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
