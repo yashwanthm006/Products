@@ -1,0 +1,23 @@
+# Products
+# RESTFull API project to give Products related Endpoints for the End users
+
+/.vs
+/ProductAPI/ProductApi.Data/Migrations
+/ProductAPI/ProductApi.API/logs
+/ProductAPI/ProductApi.API/.vs
+/ProductAPI/ProductApi.API/bin
+/ProductAPI/ProductApi.API/obj
+/ProductAPI/ProductApi.Controller/bin
+/ProductAPI/ProductApi.Controller/obj
+/ProductAPI/ProductApi.Data/bin
+/ProductAPI/ProductApi.Data/obj
+/ProductAPI/ProductApi.Models/bin
+/ProductAPI/ProductApi.Models/obj
+/ProductAPI/ProductApi.Services/bin
+/ProductAPI/ProductApi.Services/obj
+/ProductAPI/ProductApi.Shared/bin
+/ProductAPI/ProductApi.Shared/obj
+/ProductAPI/ProductApi.Mappers/bin
+/ProductAPI/ProductApi.Mappers/obj
+/ProductAPI/ProductApi.Tests/bin
+/ProductAPI/ProductApi.Tests/obj
